@@ -19,7 +19,7 @@ class CommonText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       title,
-      maxLines: 1,
+      maxLines: maxLines,
       overflow: TextOverflow.ellipsis,
       style: TextStyle(
           fontFamily: "Poppins",

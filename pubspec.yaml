@@ -8,6 +8,10 @@ environment:
   sdk: '>=2.19.6 <3.0.0'
 
 dependencies:
+  cached_network_image: 3.2.3
+  connectivity_plus: 5.0.1
+  dartz: 0.10.1
+  dio: 5.3.3
   flutter:
     sdk: flutter
   flutter_bloc: 8.1.5
@@ -18,6 +22,7 @@ dependencies:
   geolocator: 11.0.0
   get_it: 7.6.0
   http:
+  jiffy: 6.0.0
   material_design_icons_flutter: 7.0.7296
   uuid: 3.0.7
 
