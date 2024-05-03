@@ -82,7 +82,7 @@ class TopRatedView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CommonText(
-                        title: movie.title ?? "",
+                        title: movie.title,
                         color: Colors.black,
                         fontSize: 18.0),
                     Row(
