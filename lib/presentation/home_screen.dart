@@ -1,7 +1,14 @@
+import 'package:fl_wework_movies/bloc/now_playing/now_playing_bloc.dart';
+import 'package:fl_wework_movies/bloc/top_rated/top_rated_bloc.dart';
+import 'package:fl_wework_movies/domain/tmdb_movie_response_model.dart';
+import 'package:fl_wework_movies/presentation/now_playing_view.dart';
+import 'package:fl_wework_movies/presentation/top_rated_view.dart';
 import 'package:fl_wework_movies/presentation/widgets/custom_card_clipper.dart';
 import 'package:fl_wework_movies/presentation/widgets/text.dart';
 import 'package:fl_wework_movies/utils/asset_utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocode/geocode.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -18,11 +25,17 @@ class _HomeScreenState extends State<HomeScreen> {
   late GeoCode geoCode;
   Address? address;
   late double scaleFactor = 50.0;
+  late NowPlayingBloc nowPlayingBloc;
+  late TopRatedBloc topRatedBloc;
 
   @override
   void initState() {
     super.initState();
     geoCode = GeoCode();
+    nowPlayingBloc = BlocProvider.of<NowPlayingBloc>(context);
+    topRatedBloc = BlocProvider.of<TopRatedBloc>(context);
+    nowPlayingBloc.add(OnNowPlayingInit());
+    topRatedBloc.add(OnTopRatedInit());
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       scaleFactor = (MediaQuery.of(context).size.width - 2 * 16) / 7;
       position = await _determinePosition();
@@ -54,42 +67,41 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
           child: SingleChildScrollView(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      if (address != null)
-                        Flexible(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(children: [
-                                Icon(MdiIcons.mapMarkerOutline),
-                                CommonText(
-                                    title: "${address!.streetAddress}",
-                                    fontWeight: FontWeight.w700,
-                                    color: const Color(0xFF282933)),
-                              ]),
-                              const SizedBox(height: 2.0),
-                              CommonText(
-                                  title:
-                                      "${address!.city}, ${address!.region}, ${address!.countryName}",
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 12.0,
-                                  color: const Color(0xFF656072)),
-                            ],
-                          ),
-                        ),
-                      const SizedBox(height: 4.0),
-                      Container(
-                          width: 32.0,
-                          height: 32.0,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(25.0),
-                              color: Colors.white),
-                          child: Image.asset(icWeWorkShort,
-                              width: 48.0, height: 48.0))
-                    ]),
+                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  if (address != null)
+                    Flexible(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(children: [
+                            Icon(MdiIcons.mapMarkerOutline),
+                            CommonText(
+                                title: "${address!.streetAddress}",
+                                fontWeight: FontWeight.w700,
+                                color: const Color(0xFF282933)),
+                          ]),
+                          const SizedBox(height: 2.0),
+                          CommonText(
+                              title:
+                                  "${address!.city}, ${address!.region}, ${address!.countryName}",
+                              fontWeight: FontWeight.w400,
+                              fontSize: 12.0,
+                              color: const Color(0xFF656072)),
+                        ],
+                      ),
+                    ),
+                  const SizedBox(height: 4.0),
+                  Container(
+                      width: 32.0,
+                      height: 32.0,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(25.0),
+                          color: Colors.white),
+                      child:
+                          Image.asset(icWeWorkShort, width: 48.0, height: 48.0))
+                ]),
                 // Center(
                 //   child: CustomPaint(
                 //     foregroundPainter: CustomCardPainter(context: context),
@@ -107,23 +119,81 @@ class _HomeScreenState extends State<HomeScreen> {
                         gradient: LinearGradient(
                           begin: Alignment.topRight,
                           end: Alignment.bottomLeft,
-                          colors: [
-                            Color(0xFF8a808c),
-                            Color(0xFFa897a3)
-                          ],
+                          colors: [Color(0xFF8a808c), Color(0xFFa897a3)],
                         ),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(height: scaleFactor * 1.0),
-                          const CommonText(
-                              title: "We Movies",fontSize: 16.0),
+                          const CommonText(title: "We Movies", fontSize: 16.0),
                           const SizedBox(height: 4.0),
                           const CommonText(
-                              title: "n movies are loaded in now playing",fontWeight: FontWeight.w400),
+                              title: "n movies are loaded in now playing",
+                              fontWeight: FontWeight.w400),
                         ],
                       )),
+                ),
+                Row(
+                  children: const [
+                    CommonText(title: "NOW PLAYING"),
+                    SizedBox(width: 12.0),
+                    Expanded(
+                        child: Divider(
+                            endIndent: 0.0, thickness: 1.0, color: Colors.grey))
+                  ],
+                ),
+                BlocBuilder<NowPlayingBloc, NowPlayingState>(
+                  builder: (context, state) {
+                    if (state is NowPlayingSuccess) {
+                      return SizedBox(
+                        height: 320,
+                        child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            physics: const BouncingScrollPhysics(),
+                            itemCount: state.nowPlayingList.length,
+                            itemBuilder: (ctx, index) {
+                              NowPlaying movie = state.nowPlayingList[index];
+                              return Container(
+                                  margin: const EdgeInsets.only(right: 16),
+                                  child: NowPlayingView(movie: movie,scaleFactor: scaleFactor));
+                            }),
+                      );
+                    } else if (state is NowPlayingError) {
+                      return Text(state.errorMessage);
+                    } else {
+                      return const CupertinoActivityIndicator();
+                    }
+                  },
+                ),
+                Row(
+                  children: const [
+                    CommonText(title: "TOP RATED"),
+                    SizedBox(width: 12.0),
+                    Expanded(
+                        child: Divider(
+                            endIndent: 0.0, thickness: 1.0, color: Colors.grey))
+                  ],
+                ),
+                const SizedBox(height: 16.0),
+                BlocBuilder<TopRatedBloc, TopRatedState>(
+                  builder: (context, state) {
+                    if (state is TopRatedSuccess) {
+                      return ListView.builder(
+                        shrinkWrap: true,
+                          scrollDirection: Axis.vertical,
+                          physics: const BouncingScrollPhysics(),
+                          itemCount: state.topRatedList.length,
+                          itemBuilder: (ctx, index) {
+                            TopRated movie = state.topRatedList[index];
+                            return TopRatedView(movie: movie);
+                          });
+                    } else if (state is TopRatedError) {
+                      return Text(state.errorMessage);
+                    } else {
+                      return const CupertinoActivityIndicator();
+                    }
+                  },
                 ),
               ],
             ),

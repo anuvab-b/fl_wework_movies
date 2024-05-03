@@ -1,7 +1,7 @@
 part of 'top_rated_bloc.dart';
 
 class TopRatedState {
-  final List<MovieListModel> topRatedList;
+  final List<TopRated> topRatedList;
   final bool topRatedError;
   final bool topRatedLoading;
 
@@ -11,7 +11,7 @@ class TopRatedState {
     required this.topRatedError,
   });
 
-  TopRatedState copyWith(List<MovieListModel> topRatedPlaying,
+  TopRatedState copyWith(List<TopRated> topRatedPlaying,
       bool topRatedError, bool topRatedLoading) {
     return TopRatedState(
       topRatedLoading: topRatedLoading,

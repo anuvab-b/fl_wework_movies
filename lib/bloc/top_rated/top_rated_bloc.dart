@@ -30,7 +30,7 @@ class TopRatedBloc extends Bloc<TopRatedEvent, TopRatedState> {
       }, (r) {
         emit(TopRatedSuccess(
             topRatedLoading: false,
-            topRatedList: r.results,
+            topRatedList: r,
             topRatedError: false));
       });
     } catch (e) {

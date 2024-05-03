@@ -1,16 +1,18 @@
 import 'package:dartz/dartz.dart';
+import 'package:fl_wework_movies/database/appdatabase.dart';
 import 'package:fl_wework_movies/domain/i_movie_repository.dart';
 import 'package:fl_wework_movies/domain/tmdb_movie_response_model.dart';
 import 'package:fl_wework_movies/network/network.dart';
 import 'package:fl_wework_movies/utils/api_endpoints.dart';
 import 'package:fl_wework_movies/utils/secrets.dart';
+import 'package:flutter/material.dart';
 
 class MovieRepository extends IMovieRepository{
   ApiHelper apiHelper;
   MovieRepository({required this.apiHelper});
   @override
-  Future<Either<String, TmdbMovieResponseModel>> fetchNowPlayingMovies() async {
-    TmdbMovieResponseModel nowPlayingModel;
+  Future<Either<String, List<NowPlaying>>> fetchNowPlayingMovies() async {
+    TmdbNowPlayingMovieResponseModel nowPlayingModel;
     String url = "${ApiEndpoints.tmdbBaseUrl}movie/now_playing";
     String token = Secrets.tmdbToken;
 
@@ -19,8 +21,8 @@ class MovieRepository extends IMovieRepository{
         "Authorization": "Bearer $token"
       }, method: HTTPMETHOD.GET);
       if (res.statusCode == 200) {
-        nowPlayingModel = TmdbMovieResponseModel.fromJson(res.data);
-        return right(nowPlayingModel);
+        nowPlayingModel = TmdbNowPlayingMovieResponseModel.fromJson(res.data);
+        return right(nowPlayingModel.results);
       }
       else {
         return left(res.message);
@@ -32,20 +34,36 @@ class MovieRepository extends IMovieRepository{
   }
 
   @override
-  Future<Either<String, TmdbMovieResponseModel>> fetchTopRatedMovies() async {
-    TmdbMovieResponseModel topRatedModel;
-    String url = "${ApiEndpoints.tmdbBaseUrl}movie/top_rated";
-    String token = Secrets.tmdbToken;
+  Future<Either<String, List<TopRated>>> fetchTopRatedMovies() async {
+
     try {
-      var res = await apiHelper.request(url: url, headers: {
-        "Authorization": "Bearer $token"
-      }, method: HTTPMETHOD.GET);
-      if (res.statusCode == 200) {
-        topRatedModel = TmdbMovieResponseModel.fromJson(res.data);
-        return right(topRatedModel);
+      final database = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
+      final movieDao = database.movieDao;
+      final List<TopRated> topRatedMovies = await movieDao.getAllTopRatedMovies();
+      TmdbTopRatedMovieResponseModel topRatedModel;
+      String url = "${ApiEndpoints.tmdbBaseUrl}movie/top_rated";
+      String token = Secrets.tmdbToken;
+
+      if(topRatedMovies.isNotEmpty) {
+        debugPrint("Returning TopRated Cache");
+        return right(topRatedMovies);
       }
-      else {
-        return left(res.message);
+      else if(topRatedMovies.isEmpty) {
+        var res = await apiHelper.request(url: url, headers: {
+          "Authorization": "Bearer $token"
+        }, method: HTTPMETHOD.GET);
+        if (res.statusCode == 200) {
+          debugPrint("Returning TopRated Remote");
+          topRatedModel = TmdbTopRatedMovieResponseModel.fromJson(res.data);
+          movieDao.insertTopRatedMovies(topRatedModel.results);
+          return right(topRatedModel.results);
+        }
+        else {
+          return left(res.message);
+        }
+      }
+      else{
+        return right([]);
       }
     }
     catch(e){

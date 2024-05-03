@@ -1,7 +1,7 @@
 part of 'now_playing_bloc.dart';
 
 class NowPlayingState {
-  final List<MovieListModel> nowPlayingList;
+  final List<NowPlaying> nowPlayingList;
   final bool nowPlayingError;
   final bool nowPlayingLoading;
 
@@ -11,7 +11,7 @@ class NowPlayingState {
     required this.nowPlayingError,
   });
 
-  NowPlayingState copyWith(List<MovieListModel> nowPlaying,
+  NowPlayingState copyWith(List<NowPlaying> nowPlaying,
       bool nowPlayingError, bool nowPlayingLoading) {
     return NowPlayingState(
       nowPlayingLoading: nowPlayingLoading,

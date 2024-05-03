@@ -6,7 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class TopRatedView extends StatelessWidget {
-  final MovieListModel movie;
+  final TopRated movie;
 
   const TopRatedView({super.key, required this.movie});
 

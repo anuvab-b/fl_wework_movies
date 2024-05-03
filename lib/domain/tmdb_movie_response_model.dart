@@ -1,20 +1,15 @@
-import 'dart:convert';
-import 'package:fl_wework_movies/utils/date_utils.dart';
+import 'package:floor/floor.dart';
 
-TmdbMovieResponseModel tmdbMovieResponseModelFromJson(String str) => TmdbMovieResponseModel.fromJson(json.decode(str));
-
-String tmdbMovieResponseModelToJson(TmdbMovieResponseModel data) => json.encode(data.toJson());
-
-class TmdbMovieResponseModel {
+class TmdbTopRatedMovieResponseModel {
   Dates? dates;
   int? page;
-  List<MovieListModel> results;
+  List<TopRated> results;
   int? totalPages;
   int? totalResults;
   String? name;
   String? uuid;
 
-  TmdbMovieResponseModel({
+  TmdbTopRatedMovieResponseModel({
     this.dates,
     this.page,
     required this.results,
@@ -24,12 +19,12 @@ class TmdbMovieResponseModel {
     this.uuid
   });
 
-  factory TmdbMovieResponseModel.fromJson(Map<String, dynamic> json) => TmdbMovieResponseModel(
+  factory TmdbTopRatedMovieResponseModel.fromJson(Map<String, dynamic> json) => TmdbTopRatedMovieResponseModel(
     name: json["name"] ?? "",
     uuid: json["uuid"] ?? "",
     dates: json["dates"] == null ? null : Dates.fromJson(json["dates"]),
     page: json["page"],
-    results: json["results"] == null ? [] : List<MovieListModel>.from(json["results"]!.map((x) => MovieListModel.fromJson(x))),
+    results: json["results"] == null ? [] : List<TopRated>.from(json["results"]!.map((x) => TopRated.fromJson(x))),
     totalPages: json["total_pages"],
     totalResults: json["total_results"],
   );
@@ -37,12 +32,57 @@ class TmdbMovieResponseModel {
   Map<String, dynamic> toJson() => {
     "name": name,
     "uuid": uuid,
-    "results": List<dynamic>.from(results!.map((x) => x.toJson())),
+    "results": List<dynamic>.from(results.map((x) => x.toJson())),
   };
 
-  TmdbMovieResponseModel copyWith(
-      {String? name, String? uuid, List<MovieListModel>? results}) {
-    return TmdbMovieResponseModel(
+  TmdbTopRatedMovieResponseModel copyWith(
+      {String? name, String? uuid, List<TopRated>? results}) {
+    return TmdbTopRatedMovieResponseModel(
+        name: name ?? this.name,
+        results: results ?? this.results,
+        uuid: uuid ?? this.uuid
+    );
+  }
+}
+
+class TmdbNowPlayingMovieResponseModel {
+  Dates? dates;
+  int? page;
+  List<NowPlaying> results;
+  int? totalPages;
+  int? totalResults;
+  String? name;
+  String? uuid;
+
+  TmdbNowPlayingMovieResponseModel({
+    this.dates,
+    this.page,
+    required this.results,
+    this.totalPages,
+    this.totalResults,
+    this.name,
+    this.uuid
+  });
+
+  factory TmdbNowPlayingMovieResponseModel.fromJson(Map<String, dynamic> json) => TmdbNowPlayingMovieResponseModel(
+    name: json["name"] ?? "",
+    uuid: json["uuid"] ?? "",
+    dates: json["dates"] == null ? null : Dates.fromJson(json["dates"]),
+    page: json["page"],
+    results: json["results"] == null ? [] : List<NowPlaying>.from(json["results"]!.map((x) => NowPlaying.fromJson(x))),
+    totalPages: json["total_pages"],
+    totalResults: json["total_results"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "name": name,
+    "uuid": uuid,
+    "results": List<dynamic>.from(results.map((x) => x.toJson())),
+  };
+
+  TmdbNowPlayingMovieResponseModel copyWith(
+      {String? name, String? uuid, List<NowPlaying>? results}) {
+    return TmdbNowPlayingMovieResponseModel(
         name: name ?? this.name,
         results: results ?? this.results,
         uuid: uuid ?? this.uuid
@@ -70,26 +110,26 @@ class Dates {
   };
 }
 
-class MovieListModel {
+@entity
+class NowPlaying {
   bool? adult;
   String? backdropPath;
-  List<int>? genreIds;
+  @primaryKey
   int? id;
   String? originalLanguage;
   String? originalTitle;
   String? overview;
   double? popularity;
   String? posterPath;
-  DateTime? releaseDate;
+  String? releaseDate;
   String? title;
   bool? video;
   double? voteAverage;
   int? voteCount;
 
-  MovieListModel({
+  NowPlaying({
     this.adult,
     this.backdropPath,
-    this.genreIds,
     this.id,
     this.originalLanguage,
     this.originalTitle,
@@ -103,17 +143,16 @@ class MovieListModel {
     this.voteCount,
   });
 
-  factory MovieListModel.fromJson(Map<String, dynamic> json) => MovieListModel(
+  factory NowPlaying.fromJson(Map<String, dynamic> json) => NowPlaying(
     adult: json["adult"],
     backdropPath: json["backdrop_path"],
-    genreIds: json["genre_ids"] == null ? [] : List<int>.from(json["genre_ids"]!.map((x) => x)),
     id: json["id"],
     originalLanguage: json["original_language"],
     originalTitle: json["original_title"],
     overview: json["overview"],
     popularity: json["popularity"]?.toDouble(),
     posterPath: json["poster_path"],
-    releaseDate: json["release_date"] == null ? null : DateUtils.getDateTime(json["release_date"]),
+    releaseDate: json["release_date"],
     title: json["title"],
     video: json["video"],
     voteAverage: json["vote_average"]?.toDouble(),
@@ -123,14 +162,80 @@ class MovieListModel {
   Map<String, dynamic> toJson() => {
     "adult": adult,
     "backdrop_path": backdropPath,
-    "genre_ids": genreIds == null ? [] : List<dynamic>.from(genreIds!.map((x) => x)),
+    "genre_ids": [],
     "id": id,
     "original_language": originalLanguage,
     "original_title": originalTitle,
     "overview": overview,
     "popularity": popularity,
     "poster_path": posterPath,
-    "release_date": "${releaseDate!.year.toString().padLeft(4, '0')}-${releaseDate!.month.toString().padLeft(2, '0')}-${releaseDate!.day.toString().padLeft(2, '0')}",
+    "release_date": releaseDate,
+    "title": title,
+    "video": video,
+    "vote_average": voteAverage,
+    "vote_count": voteCount,
+  };
+}
+@entity
+class TopRated {
+  bool? adult;
+  String? backdropPath;
+  @primaryKey
+  int? id;
+  String? originalLanguage;
+  String? originalTitle;
+  String? overview;
+  double? popularity;
+  String? posterPath;
+  String? releaseDate;
+  String? title;
+  bool? video;
+  double? voteAverage;
+  int? voteCount;
+
+  TopRated({
+    this.adult,
+    this.backdropPath,
+    this.id,
+    this.originalLanguage,
+    this.originalTitle,
+    this.overview,
+    this.popularity,
+    this.posterPath,
+    this.releaseDate,
+    this.title,
+    this.video,
+    this.voteAverage,
+    this.voteCount,
+  });
+
+  factory TopRated.fromJson(Map<String, dynamic> json) => TopRated(
+    adult: json["adult"],
+    backdropPath: json["backdrop_path"],
+    id: json["id"],
+    originalLanguage: json["original_language"],
+    originalTitle: json["original_title"],
+    overview: json["overview"],
+    popularity: json["popularity"]?.toDouble(),
+    posterPath: json["poster_path"],
+    releaseDate: json["release_date"],
+    title: json["title"],
+    video: json["video"],
+    voteAverage: json["vote_average"]?.toDouble(),
+    voteCount: json["vote_count"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "adult": adult,
+    "backdrop_path": backdropPath,
+    "genre_ids": [],
+    "id": id,
+    "original_language": originalLanguage,
+    "original_title": originalTitle,
+    "overview": overview,
+    "popularity": popularity,
+    "poster_path": posterPath,
+    "release_date": releaseDate,
     "title": title,
     "video": video,
     "vote_average": voteAverage,
