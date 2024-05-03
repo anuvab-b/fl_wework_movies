@@ -13,7 +13,7 @@ class MovieRepository extends IMovieRepository {
   MovieRepository({required this.apiHelper});
 
   @override
-  Future<Either<String, List<NowPlaying>>> fetchNowPlayingMovies() async {
+  Future<Either<String, List<NowPlaying>>> fetchNowPlayingMovies(bool refresh) async {
     try {
       final database =
           await $FloorAppDatabase.databaseBuilder('app_database.db').build();
@@ -24,10 +24,10 @@ class MovieRepository extends IMovieRepository {
       String url = "${ApiEndpoints.tmdbBaseUrl}movie/now_playing";
       String token = Secrets.tmdbToken;
 
-      if (nowPlaying.isNotEmpty) {
+      if (!refresh && nowPlaying.isNotEmpty) {
         debugPrint("Returning NowPlaying Cache");
         return right(nowPlaying);
-      } else if (nowPlaying.isEmpty) {
+      } else if (refresh || nowPlaying.isEmpty) {
         var res = await apiHelper.request(
             url: url,
             headers: {"Authorization": "Bearer $token"},
@@ -35,6 +35,7 @@ class MovieRepository extends IMovieRepository {
         if (res.statusCode == 200) {
           debugPrint("Returning NowPlaying Remote");
           nowPlayingModel = TmdbNowPlayingMovieResponseModel.fromJson(res.data);
+          await movieDao.deleteAllNowPlayingMovies();
           movieDao.insertNowPlayingMovies(nowPlayingModel.results);
           return right(nowPlayingModel.results);
         } else {
@@ -49,7 +50,7 @@ class MovieRepository extends IMovieRepository {
   }
 
   @override
-  Future<Either<String, List<TopRated>>> fetchTopRatedMovies() async {
+  Future<Either<String, List<TopRated>>> fetchTopRatedMovies(bool refresh) async {
     try {
       final database =
           await $FloorAppDatabase.databaseBuilder('app_database.db').build();
@@ -60,10 +61,10 @@ class MovieRepository extends IMovieRepository {
       String url = "${ApiEndpoints.tmdbBaseUrl}movie/top_rated";
       String token = Secrets.tmdbToken;
 
-      if (topRatedMovies.isNotEmpty) {
+      if (!refresh && topRatedMovies.isNotEmpty) {
         debugPrint("Returning TopRated Cache");
         return right(topRatedMovies);
-      } else if (topRatedMovies.isEmpty) {
+      } else if (refresh || topRatedMovies.isEmpty) {
         var res = await apiHelper.request(
             url: url,
             headers: {"Authorization": "Bearer $token"},
@@ -71,6 +72,7 @@ class MovieRepository extends IMovieRepository {
         if (res.statusCode == 200) {
           debugPrint("Returning TopRated Remote");
           topRatedModel = TmdbTopRatedMovieResponseModel.fromJson(res.data);
+          await movieDao.deleteAllTopRatedMovies();
           movieDao.insertTopRatedMovies(topRatedModel.results);
           return right(topRatedModel.results);
         } else {

@@ -118,8 +118,8 @@ class _HomeContentState extends State<HomeContent> {
     geoCode = GeoCode();
     nowPlayingBloc = BlocProvider.of<NowPlayingBloc>(context);
     topRatedBloc = BlocProvider.of<top.TopRatedBloc>(context);
-    nowPlayingBloc.add(OnNowPlayingInit());
-    topRatedBloc.add(top.OnTopRatedInit());
+    nowPlayingBloc.add(OnNowPlayingInit(refresh: false));
+    topRatedBloc.add(top.OnTopRatedInit(refresh: false));
     scaleFactor =
         MediaQueryData.fromWindow(WidgetsBinding.instance.window).size.width /
             8;
@@ -186,8 +186,8 @@ class _HomeContentState extends State<HomeContent> {
     return SafeArea(
         child: RefreshIndicator(
       onRefresh: () async {
-        nowPlayingBloc.add(OnNowPlayingInit());
-        topRatedBloc.add(top.OnTopRatedInit());
+        nowPlayingBloc.add(OnNowPlayingInit(refresh:true));
+        topRatedBloc.add(top.OnTopRatedInit(refresh:true));
       },
       child: Container(
         height: MediaQuery.of(context).size.height,

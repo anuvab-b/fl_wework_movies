@@ -28,7 +28,7 @@ class NowPlayingBloc extends Bloc<NowPlayingEvent, NowPlayingState> {
           allNowPlayingList: [],
           nowPlayingError: false));
 
-      var result = await movieRepository.fetchNowPlayingMovies();
+      var result = await movieRepository.fetchNowPlayingMovies(event.refresh);
       result.fold((l) {
         emit(NowPlayingError(
             errorMessage: l,

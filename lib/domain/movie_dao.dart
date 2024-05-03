@@ -11,4 +11,9 @@ abstract class MovieDao{
   Future<void> insertNowPlayingMovies(List<NowPlaying> movies);
   @insert
   Future<void> insertTopRatedMovies(List<TopRated> movies);
+
+  @Query("DELETE FROM NowPlaying")
+  Future<void> deleteAllNowPlayingMovies();
+  @Query("DELETE FROM TopRated")
+  Future<void> deleteAllTopRatedMovies();
 }

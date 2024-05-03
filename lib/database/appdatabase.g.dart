@@ -192,6 +192,16 @@ class _$MovieDao extends MovieDao {
   }
 
   @override
+  Future<void> deleteAllNowPlayingMovies() async {
+    await _queryAdapter.queryNoReturn('DELETE FROM NowPlaying');
+  }
+
+  @override
+  Future<void> deleteAllTopRatedMovies() async {
+    await _queryAdapter.queryNoReturn('DELETE FROM TopRated');
+  }
+
+  @override
   Future<void> insertNowPlayingMovies(List<NowPlaying> movies) async {
     await _nowPlayingInsertionAdapter.insertList(
         movies, OnConflictStrategy.abort);

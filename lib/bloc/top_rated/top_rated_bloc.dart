@@ -27,7 +27,7 @@ class TopRatedBloc extends Bloc<TopRatedEvent, TopRatedState> {
           filterTopRatedList: [],
           topRatedError: false));
 
-      var result = await movieRepository.fetchTopRatedMovies();
+      var result = await movieRepository.fetchTopRatedMovies(event.refresh);
       result.fold((l) {
         emit(TopRatedError(
             errorMessage: l,
