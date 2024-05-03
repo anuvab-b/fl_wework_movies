@@ -1,4 +1,3 @@
-import 'package:fl_wework_movies/domain/tmdb_movie_response_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'home_event.dart';
