@@ -122,7 +122,7 @@ class NowPlaying {
   double? popularity;
   String? posterPath;
   String? releaseDate;
-  String? title;
+  String title;
   bool? video;
   double? voteAverage;
   int? voteCount;
@@ -137,7 +137,7 @@ class NowPlaying {
     this.popularity,
     this.posterPath,
     this.releaseDate,
-    this.title,
+    required this.title,
     this.video,
     this.voteAverage,
     this.voteCount,
@@ -153,7 +153,7 @@ class NowPlaying {
     popularity: json["popularity"]?.toDouble(),
     posterPath: json["poster_path"],
     releaseDate: json["release_date"],
-    title: json["title"],
+    title: json["title"] ?? "",
     video: json["video"],
     voteAverage: json["vote_average"]?.toDouble(),
     voteCount: json["vote_count"],
@@ -188,7 +188,7 @@ class TopRated {
   double? popularity;
   String? posterPath;
   String? releaseDate;
-  String? title;
+  String title;
   bool? video;
   double? voteAverage;
   int? voteCount;
@@ -203,7 +203,7 @@ class TopRated {
     this.popularity,
     this.posterPath,
     this.releaseDate,
-    this.title,
+    required this.title,
     this.video,
     this.voteAverage,
     this.voteCount,
@@ -214,7 +214,7 @@ class TopRated {
     backdropPath: json["backdrop_path"],
     id: json["id"],
     originalLanguage: json["original_language"],
-    originalTitle: json["original_title"],
+    originalTitle: json["original_title"] ?? "",
     overview: json["overview"],
     popularity: json["popularity"]?.toDouble(),
     posterPath: json["poster_path"],

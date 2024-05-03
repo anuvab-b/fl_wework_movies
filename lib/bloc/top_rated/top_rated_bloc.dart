@@ -11,34 +11,63 @@ class TopRatedBloc extends Bloc<TopRatedEvent, TopRatedState> {
 
   TopRatedBloc(this.movieRepository)
       : super(TopRatedInitial(
-            topRatedLoading: false, topRatedList: [], topRatedError: false)) {
+            topRatedLoading: false,
+            filterTopRatedList: [],
+            allTopRatedList: [],
+            topRatedError: false)) {
     on<OnTopRatedInit>(onTopRatedInit);
+    on<OnSearchMovieTextChange>(onSearchMovieTextChange);
   }
 
   onTopRatedInit(OnTopRatedInit event, Emitter<TopRatedState> emit) async {
     try {
       emit(TopRatedLoading(
-          topRatedLoading: true, topRatedList: [], topRatedError: false));
+          topRatedLoading: true,
+          allTopRatedList: [],
+          filterTopRatedList: [],
+          topRatedError: false));
 
       var result = await movieRepository.fetchTopRatedMovies();
       result.fold((l) {
         emit(TopRatedError(
             errorMessage: l,
             topRatedLoading: false,
-            topRatedList: [],
+            filterTopRatedList: [],
+            allTopRatedList: [],
             topRatedError: true));
       }, (r) {
         emit(TopRatedSuccess(
             topRatedLoading: false,
-            topRatedList: r,
+            allTopRatedList: r,
+            filterTopRatedList: r,
             topRatedError: false));
       });
     } catch (e) {
       emit(TopRatedError(
           errorMessage: e.toString(),
           topRatedLoading: false,
-          topRatedList: [],
+          filterTopRatedList: [],
+          allTopRatedList: [],
           topRatedError: true));
     }
+  }
+
+  onSearchMovieTextChange(
+      OnSearchMovieTextChange event, Emitter<TopRatedState> emit) async {
+    String text = event.text;
+    List<TopRated> topRated = List.empty(growable: true);
+    if (text.isEmpty) {
+      topRated = state.allTopRatedList;
+    } else {
+      topRated = state.allTopRatedList
+          .where((element) =>
+              element.title.toLowerCase().contains(text.toLowerCase()))
+          .toList();
+    }
+    emit(TopRatedSuccess(
+        allTopRatedList: state.allTopRatedList,
+        filterTopRatedList: topRated,
+        topRatedError: false,
+        topRatedLoading: false));
   }
 }

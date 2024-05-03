@@ -1,6 +1,6 @@
 import 'package:jiffy/jiffy.dart';
 
-class DateUtils{
+class AppDateUtils{
   static DateTime? getDateTime(String dateTime){
     try{
       return Jiffy.parse(dateTime).dateTime;

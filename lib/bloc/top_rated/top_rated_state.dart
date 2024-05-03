@@ -1,13 +1,15 @@
 part of 'top_rated_bloc.dart';
 
 class TopRatedState {
-  final List<TopRated> topRatedList;
+  final List<TopRated> allTopRatedList;
+  final List<TopRated> filterTopRatedList;
   final bool topRatedError;
   final bool topRatedLoading;
 
   TopRatedState({
     required this.topRatedLoading,
-    required this.topRatedList,
+    required this.allTopRatedList,
+    required this.filterTopRatedList,
     required this.topRatedError,
   });
 
@@ -15,7 +17,8 @@ class TopRatedState {
       bool topRatedError, bool topRatedLoading) {
     return TopRatedState(
       topRatedLoading: topRatedLoading,
-      topRatedList: topRatedPlaying,
+      allTopRatedList: allTopRatedList,
+      filterTopRatedList: topRatedPlaying,
       topRatedError: topRatedError,
     );
   }
@@ -24,7 +27,8 @@ class TopRatedState {
 class TopRatedInitial extends TopRatedState {
   TopRatedInitial({
     required super.topRatedLoading,
-    required super.topRatedList,
+    required super.filterTopRatedList,
+    required super.allTopRatedList,
     required super.topRatedError,
   });
 }
@@ -35,7 +39,8 @@ class TopRatedError extends TopRatedState {
   TopRatedError({
     required this.errorMessage,
     required super.topRatedLoading,
-    required super.topRatedList,
+    required super.allTopRatedList,
+    required super.filterTopRatedList,
     required super.topRatedError,
   });
 }
@@ -43,7 +48,8 @@ class TopRatedError extends TopRatedState {
 class TopRatedLoading extends TopRatedState {
   TopRatedLoading({
     required super.topRatedLoading,
-    required super.topRatedList,
+    required super.filterTopRatedList,
+    required super.allTopRatedList,
     required super.topRatedError,
   });
 }
@@ -51,7 +57,8 @@ class TopRatedLoading extends TopRatedState {
 class TopRatedSuccess extends TopRatedState {
   TopRatedSuccess({
     required super.topRatedLoading,
-    required super.topRatedList,
+    required super.allTopRatedList,
+    required super.filterTopRatedList,
     required super.topRatedError,
   });
 }

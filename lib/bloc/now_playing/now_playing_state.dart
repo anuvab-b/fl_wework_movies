@@ -1,13 +1,15 @@
 part of 'now_playing_bloc.dart';
 
 class NowPlayingState {
-  final List<NowPlaying> nowPlayingList;
+  final List<NowPlaying> allNowPlayingList;
+  final List<NowPlaying> filterNowPlayingList;
   final bool nowPlayingError;
   final bool nowPlayingLoading;
 
   NowPlayingState({
     required this.nowPlayingLoading,
-    required this.nowPlayingList,
+    required this.allNowPlayingList,
+    required this.filterNowPlayingList,
     required this.nowPlayingError,
   });
 
@@ -15,7 +17,8 @@ class NowPlayingState {
       bool nowPlayingError, bool nowPlayingLoading) {
     return NowPlayingState(
       nowPlayingLoading: nowPlayingLoading,
-      nowPlayingList: nowPlaying,
+      allNowPlayingList: allNowPlayingList,
+      filterNowPlayingList: nowPlaying,
       nowPlayingError: nowPlayingError,
     );
   }
@@ -24,7 +27,8 @@ class NowPlayingState {
 class NowPlayingInitial extends NowPlayingState {
   NowPlayingInitial({
     required super.nowPlayingLoading,
-    required super.nowPlayingList,
+    required super.allNowPlayingList,
+    required super.filterNowPlayingList,
     required super.nowPlayingError,
   });
 }
@@ -35,7 +39,8 @@ class NowPlayingError extends NowPlayingState {
   NowPlayingError({
     required this.errorMessage,
     required super.nowPlayingLoading,
-    required super.nowPlayingList,
+    required super.allNowPlayingList,
+    required super.filterNowPlayingList,
     required super.nowPlayingError,
   });
 }
@@ -43,7 +48,8 @@ class NowPlayingError extends NowPlayingState {
 class NowPlayingLoading extends NowPlayingState {
   NowPlayingLoading({
     required super.nowPlayingLoading,
-    required super.nowPlayingList,
+    required super.allNowPlayingList,
+    required super.filterNowPlayingList,
     required super.nowPlayingError,
   });
 }
@@ -51,7 +57,8 @@ class NowPlayingLoading extends NowPlayingState {
 class NowPlayingSuccess extends NowPlayingState {
   NowPlayingSuccess({
     required super.nowPlayingLoading,
-    required super.nowPlayingList,
+    required super.allNowPlayingList,
+    required super.filterNowPlayingList,
     required super.nowPlayingError,
   });
 }
