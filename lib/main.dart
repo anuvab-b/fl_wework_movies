@@ -23,18 +23,38 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
         providers: [
           BlocProvider<SplashBloc>(
-            create: (BuildContext context) => SplashBloc()),
+              create: (BuildContext context) => SplashBloc()),
           BlocProvider<TopRatedBloc>(
-              create: (BuildContext context) => TopRatedBloc(getIt.get<IMovieRepository>())),
+              create: (BuildContext context) =>
+                  TopRatedBloc(getIt.get<IMovieRepository>())),
           BlocProvider<NowPlayingBloc>(
-              create: (BuildContext context) => NowPlayingBloc(getIt.get<IMovieRepository>())),
+              create: (BuildContext context) =>
+                  NowPlayingBloc(getIt.get<IMovieRepository>())),
           // BlocProvider<SplashBloc>(
           //     create: (BuildContext context) => HomeBloc())
         ],
         child: MaterialApp(
             debugShowCheckedModeBanner: false,
             title: 'WeWork Movies',
-            theme: ThemeData(primarySwatch: Colors.blue),
+            theme: ThemeData(
+                primarySwatch: Colors.blue,
+                bottomNavigationBarTheme: BottomNavigationBarThemeData(
+                    type: BottomNavigationBarType.shifting,
+                    backgroundColor: Colors.grey[900],
+                    elevation: 10,
+                    selectedLabelStyle: const TextStyle(
+                        color: Colors.black87,
+                        fontFamily: "Poppins",
+                        fontWeight: FontWeight.w800,
+                        fontSize: 14.0),
+                    unselectedLabelStyle: const TextStyle(
+                        color: Colors.black87,
+                        fontFamily: "Poppins",
+                        fontWeight: FontWeight.w300,
+                        fontSize: 12.0),
+                    selectedItemColor: Colors.black87,
+                    unselectedItemColor: Colors.black87,
+                    showUnselectedLabels: true)),
             initialRoute: RouteNames.splash,
             onGenerateRoute: Routes.generateRoute));
   }

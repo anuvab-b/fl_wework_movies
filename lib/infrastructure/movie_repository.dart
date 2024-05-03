@@ -23,10 +23,6 @@ class MovieRepository extends IMovieRepository {
       TmdbNowPlayingMovieResponseModel nowPlayingModel;
       String url = "${ApiEndpoints.tmdbBaseUrl}movie/now_playing";
       String token = Secrets.tmdbToken;
-      var res = await apiHelper.request(
-          url: url,
-          headers: {"Authorization": "Bearer $token"},
-          method: HTTPMETHOD.GET);
 
       if (nowPlaying.isNotEmpty) {
         debugPrint("Returning NowPlaying Cache");
