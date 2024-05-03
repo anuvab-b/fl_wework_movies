@@ -160,11 +160,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       left: 16.0,
                       child: CommonText(
                           title: AppDateUtils.formatDateTime(DateTime.now(),
-                                  outputFormat: "MMMM do, yyyy")
+                                  outputFormat: "MMMM do yyyy")
                               .toUpperCase(),
                           fontWeight: FontWeight.w700,
                           color: Colors.black87.withOpacity(0.75),
-                          fontSize: 12.0),
+                          fontSize: 14.0),
                     ),
                     SizedBox(
                       child: ClipPath(
@@ -187,15 +187,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                 SizedBox(height: scaleFactor * 0.9),
                                 const CommonText(
                                     title: "We Movies",
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.w700),
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.w600),
                                 const SizedBox(height: 4.0),
                                 BlocBuilder<NowPlayingBloc, NowPlayingState>(
                                     builder: (context, state) {
                                   return CommonText(
                                       title:
                                           "${state.filterNowPlayingList.length} movies are loaded in now playing",
-                                      fontWeight: FontWeight.w400,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black38,
                                       fontSize: 12.0);
                                 })
                               ],
@@ -285,8 +286,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                             ? 40.0
                                             : 8.0,
                                         height: index == selectedPageIndex
-                                            ? 18.0
+                                            ? 24.0
                                             : 8.0,
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 4.0),
                                         margin: const EdgeInsets.symmetric(
                                             horizontal: 4.0),
                                         decoration: BoxDecoration(
@@ -296,11 +299,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                             color: index == selectedPageIndex
                                                 ? Colors.black87
                                                 : Colors.grey),
-                                        child: CommonText(
-                                            title:
-                                                "${bannerPageIndex + 1}/${state.filterNowPlayingList.length}",
-                                            color: Colors.white,
-                                            fontSize: 10.0),
+                                        child: index == selectedPageIndex
+                                            ? CommonText(
+                                                title:
+                                                    "${bannerPageIndex + 1}/${state.filterNowPlayingList.length}",
+                                                color: Colors.white,
+                                                fontSize: 10.0)
+                                            : const SizedBox(),
                                       ),
                                     );
                                   }),

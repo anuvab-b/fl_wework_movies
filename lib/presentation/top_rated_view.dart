@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fl_wework_movies/domain/tmdb_movie_response_model.dart';
 import 'package:fl_wework_movies/presentation/widgets/text.dart';
 import 'package:fl_wework_movies/utils/api_endpoints.dart';
+import 'package:fl_wework_movies/utils/data_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -83,8 +84,7 @@ class TopRatedView extends StatelessWidget {
                     CommonText(
                         title: movie.title ?? "",
                         color: Colors.black,
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w600),
+                        fontSize: 18.0),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -103,7 +103,7 @@ class TopRatedView extends StatelessWidget {
                     ),
                     Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
                       CommonText(
-                          title: "${movie.voteCount} Votes",
+                          title: "${DataUtils.formatVotes(movie.voteCount)} Votes",
                           color: Colors.grey,
                           fontWeight: FontWeight.w600),
                       const SizedBox(width: 4.0),
@@ -116,7 +116,9 @@ class TopRatedView extends StatelessWidget {
                           title: movie.voteAverage?.toStringAsFixed(1) ?? "",
                           color: Colors.grey,
                           fontWeight: FontWeight.w600,
-                          fontSize: 14.0)
+                          fontSize: 14.0),
+                      const SizedBox(width: 4.0),
+                      const Icon(Icons.star_rounded,color: Colors.yellow)
                     ]),
                   ],
                 ),
