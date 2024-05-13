@@ -1,6 +1,6 @@
-# WeWorks Movies Mobile Application
+# WeWork Movies Mobile Application
 
-WeWorks Movies Mobile application for Android and IOS, built with Flutter, a cross-platform SDK.
+WeWork Movies Mobile application for Android and IOS, built with Flutter, a cross-platform SDK.
 
 ## Project Preview
 <p>
